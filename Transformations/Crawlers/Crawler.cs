@@ -94,7 +94,7 @@ namespace Transformations.Crawlers
             {
                 environment = Environment;
             }
-            Regex regexForIf = new Regex($"#if\\({environment}\\)(.*?)#endif({System.Environment.NewLine})?", RegexOptions.Singleline);
+            Regex regexForIf = new Regex($"#if\\((([a-z0-9]*)\\|\\|)*{environment}((\\|\\|([a-z0-9]*)))*\\)(.*?)#endif({System.Environment.NewLine})?", RegexOptions.Singleline);
             Match match = regexForIf.Match(text);
             while (match.Success)
             {

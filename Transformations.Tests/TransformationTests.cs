@@ -42,6 +42,7 @@ namespace Transformations.Tests
         [Ignore("This test runs in DEBUG mode only")]
 #endif
         [Test]
+        //requires the file C:\Test\local.environment to exist
         public void EnvironmentTest()
         {
             Assert.That(Crawler.GetEnvironment, Is.EqualTo("local"));
@@ -74,6 +75,64 @@ namespace Transformations.Tests
                        "	<tes name=\"${Local.Property1}\" value=\"FirstLocalPropTEST\"/>" + System.Environment.NewLine +
                        "	<tes name=\"${Local.Property2}\" value=\"SecondLocalPropTEST\"/>" + System.Environment.NewLine +
                        "	<tes name=\"${Global.Property3}\" value=\"ThirdGlobalPropOverwriteTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.dev}\" value=\"This is dev Environment\"/>" + System.Environment.NewLine +
+                       "</term>";
+            Crawler crawler = new Crawler();
+
+            Assert.That(textForLocal, Is.EqualTo(crawler.HandleLogic(text, "local")));
+#if DEBUG
+            Assert.That(textForLocal, Is.EqualTo(crawler.HandleLogic(text, Crawler.GetEnvironment)));
+#endif
+            Assert.That(textForDev, Is.EqualTo(crawler.HandleLogic(text, "dev")));
+        }
+
+        [Test]
+        public void LogicHandlingTestForMultienvironmentalIfs()
+        {
+            var text = "<term>" + System.Environment.NewLine +
+                       "	<tes name=\"${Global.Property1}\" value=\"FirstGlobalPropOverwriteTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Local.Property1}\" value=\"FirstLocalPropTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Local.Property2}\" value=\"SecondLocalPropTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Global.Property3}\" value=\"ThirdGlobalPropOverwriteTEST\"/>" + System.Environment.NewLine +
+                       "#if(local)" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.local}\" value=\"This is local Environment\"/>" + System.Environment.NewLine +
+                       "#endif" + System.Environment.NewLine +
+                       "#if(dev||local)" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.devOrLocal}\" value=\"This is dev and local Environment\"/>" + System.Environment.NewLine +
+                       "#endif" + System.Environment.NewLine +
+                       "#if(local||dev)" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.localOrDev}\" value=\"This is local and dev Environment\"/>" + System.Environment.NewLine +
+                       "#endif" + System.Environment.NewLine +
+                       "#if(dev||local||auth)" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.devLocalAuth}\" value=\"This is dev, local and auth Environment\"/>" + System.Environment.NewLine +
+                       "#endif" + System.Environment.NewLine +
+                       "#if(auth||dev||local)" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.authDevLocal}\" value=\"This is auth, dev and local Environment\"/>" + System.Environment.NewLine +
+                       "#endif" + System.Environment.NewLine +
+                       "#if(dev)" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.dev}\" value=\"This is dev Environment\"/>" + System.Environment.NewLine +
+                       "#endif" + System.Environment.NewLine +
+                       "</term>";
+            var textForLocal = "<term>" + System.Environment.NewLine +
+                       "	<tes name=\"${Global.Property1}\" value=\"FirstGlobalPropOverwriteTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Local.Property1}\" value=\"FirstLocalPropTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Local.Property2}\" value=\"SecondLocalPropTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Global.Property3}\" value=\"ThirdGlobalPropOverwriteTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.local}\" value=\"This is local Environment\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.devOrLocal}\" value=\"This is dev and local Environment\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.localOrDev}\" value=\"This is local and dev Environment\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.devLocalAuth}\" value=\"This is dev, local and auth Environment\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.authDevLocal}\" value=\"This is auth, dev and local Environment\"/>" + System.Environment.NewLine +
+                       "</term>";
+            var textForDev = "<term>" + System.Environment.NewLine +
+                       "	<tes name=\"${Global.Property1}\" value=\"FirstGlobalPropOverwriteTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Local.Property1}\" value=\"FirstLocalPropTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Local.Property2}\" value=\"SecondLocalPropTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Global.Property3}\" value=\"ThirdGlobalPropOverwriteTEST\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.devOrLocal}\" value=\"This is dev and local Environment\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.localOrDev}\" value=\"This is local and dev Environment\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.devLocalAuth}\" value=\"This is dev, local and auth Environment\"/>" + System.Environment.NewLine +
+                       "	<tes name=\"${Environment.authDevLocal}\" value=\"This is auth, dev and local Environment\"/>" + System.Environment.NewLine +
                        "	<tes name=\"${Environment.dev}\" value=\"This is dev Environment\"/>" + System.Environment.NewLine +
                        "</term>";
             Crawler crawler = new Crawler();
