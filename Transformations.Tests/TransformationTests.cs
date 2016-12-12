@@ -142,9 +142,20 @@ namespace Transformations.Tests
             Assert.That(textForLocal, Is.EqualTo(crawler.HandleLogic(text, Crawler.GetEnvironment)));
 #endif
             Assert.That(textForDev, Is.EqualTo(crawler.HandleLogic(text, "dev")));
+        }
 
-
-
+        [Test]
+        public void MultivariableTokenTest()
+        {
+            const string text = "testText${mostOutterToken}MoreTestText";
+            var dict = new Dictionary<string, string>
+            {
+                {"testToken", "ResultingText"},
+                {"outterToken", "Outter${testToken}Test" },
+                {"mostOutterToken","Most${outterToken}Test" }
+            };
+            var crawler = new Crawler();
+            Assert.That("testTextMostOutterResultingTextTestTestMoreTestText", Is.EqualTo(crawler.ReplaceTokens(text, dict)));
         }
     }
 }

@@ -78,7 +78,13 @@ namespace Transformations.Crawlers
             {
                 dict = _allPropertiesDict;
             }
-            text = dict.Aggregate(text, (current, property) => current.Replace($"${{{property.Key}}}", property.Value));
+            string originalText;
+            do
+            {
+                originalText = text;
+                text = dict.Aggregate(text,
+                    (current, property) => current.Replace($"${{{property.Key}}}", property.Value));
+            } while (originalText != text);
             var indexOfTokenBeginning = text.IndexOf("${", StringComparison.Ordinal);
             if (indexOfTokenBeginning < 0) return text;
             var textAfterTokenBeginning = text.Substring(indexOfTokenBeginning);
