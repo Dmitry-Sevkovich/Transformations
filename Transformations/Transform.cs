@@ -12,7 +12,11 @@ namespace Transformations
         static void Main(string[] args)
         {
             Crawler crawler = new Crawler();
-            crawler.Crawl();
+            if (args.Length == 0)
+            {
+                crawler.Crawl();
+            }
+            crawler.Crawl(args[0]);
         }
     }
 }
