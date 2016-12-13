@@ -16,6 +16,8 @@ namespace Transformations.Crawlers
 
         private static string _environment = GetEnvironment;
 
+        private const string FileExtension = ".ttemplate";
+
         internal static string GetEnvironment {
             get
             {
@@ -70,12 +72,12 @@ namespace Transformations.Crawlers
         }
         internal void Traverse(string currentDir)
         {
-            var templateFiles = Directory.GetFiles(currentDir, "*.ttemplate");
+            var templateFiles = Directory.GetFiles(currentDir, $"*{FileExtension}");
             foreach (var templateFile in templateFiles)
             {
                 var text = File.ReadAllText(templateFile);
                 text = HandleLogic(text, _environment);
-                var newFileName = templateFile.Remove(templateFile.Length - 9);
+                var newFileName = templateFile.Remove(templateFile.Length - FileExtension.Length);
                 text = ReplaceTokens(text);
                 File.WriteAllText(newFileName, text);
             }
