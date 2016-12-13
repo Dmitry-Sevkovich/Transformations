@@ -16,7 +16,10 @@ namespace Transformations
             {
                 crawler.Crawl();
             }
-            crawler.Crawl(args[0]);
+            else
+            {
+                crawler.Crawl(args[0]);
+            }
         }
     }
 }
