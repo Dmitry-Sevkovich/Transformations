@@ -30,24 +30,35 @@ namespace Transformations.Crawlers
             }
         }
 
-
-        public static string CurrentDir
+        private static string _workingDir = CurrentDir;
+        internal static string CurrentDir
         {
             get
             {
 #if DEBUG
                 return "C:\\Test";
 #endif
-                return Directory.GetCurrentDirectory();
+                if (string.IsNullOrEmpty(_workingDir))
+                {
+                    return Directory.GetCurrentDirectory();
+                }
+                return _workingDir;
             }
         }
-        internal void Crawl(string environment = null)
+        internal void Crawl(string[] args)
         {
-            var configDir = $"{CurrentDir}\\config\\";
-            if (!string.IsNullOrEmpty(environment))
+            if (args.Length >= 1 && !string.IsNullOrEmpty(args[0]))
             {
-                _environment = environment;
+                _environment = args[0];
             }
+            if (args.Length >= 2 && !string.IsNullOrEmpty(args[1]))
+            {
+                _workingDir = args[1];
+            }
+
+            
+            var configDir = $"{CurrentDir}\\config\\";
+
             try
             {
                 XDocument globalDocument = XDocument.Load($"{configDir}global.properties");
@@ -66,6 +77,7 @@ namespace Transformations.Crawlers
             }
             catch (Exception ex)
             {
+                File.WriteAllText("TransformationsErrorLog.txt", ex.Message + System.Environment.NewLine + ex.StackTrace);
                 Console.WriteLine(ex.Message);
                 Console.ReadKey();
             }
@@ -80,6 +92,7 @@ namespace Transformations.Crawlers
                 var newFileName = templateFile.Remove(templateFile.Length - FileExtension.Length);
                 text = ReplaceTokens(text);
                 File.WriteAllText(newFileName, text);
+                Console.WriteLine($"{newFileName} has been written");
             }
 
             var directoryList = Directory.GetDirectories(currentDir);
