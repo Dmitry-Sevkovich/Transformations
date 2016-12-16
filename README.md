@@ -60,3 +60,8 @@ To use the tool:
         <settingForProd/>
         
 8. To specify the environment you are in, drop the file {env_name}.environment into the same folder as Transformations.exe file. In that case you are able to run the transformations just clicking on the .exe file. Or you can specify the environment as the first command line argument, in which case the .environment file is not needed. You can also specify the working directory as the second command line argument, where the program is going to perform transformations. In that case the program is going to act as it is located in the specified directory. NOTE: If you want to specify the directory, the environment has to be specified as the first command line argument and .environment file will not be taken into consideration.
+
+
+# Tests
+
+To run tests in DEBUG mode, create the folder C:\Test and put the file local.environment in there.
