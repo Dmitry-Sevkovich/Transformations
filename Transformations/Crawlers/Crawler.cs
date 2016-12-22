@@ -56,23 +56,9 @@ namespace Transformations.Crawlers
                 _workingDir = args[1];
             }
 
-            
-            var configDir = $"{CurrentDir}\\config\\";
-
             try
             {
-                XDocument globalDocument = XDocument.Load($"{configDir}global.properties");
-                var allPropertiesGlobal = globalDocument.Root?.DescendantNodes().OfType<XElement>();
-                var allItemsDictGlobal = allPropertiesGlobal?.ToDictionary(n => n.Attribute("name")?.Value,
-                    n => n.Attribute("value")?.Value);
-                XDocument localDocument = XDocument.Load($"{configDir}{_environment}.properties");
-                var allPropertiesLocal = localDocument.Root?.DescendantNodes().OfType<XElement>();
-                var allItemsDictLocal = allPropertiesLocal.ToDictionary(n => n.Attribute("name").Value,
-                    n => n.Attribute("value").Value);
-                _allPropertiesDict =
-                    allItemsDictGlobal.Concat(allItemsDictLocal)
-                        .GroupBy(d => d.Key)
-                        .ToDictionary(d => d.Key, d => d.Last().Value);
+                _allPropertiesDict = PopulateDictionaryWithProperties();
                 Traverse(CurrentDir);
             }
             catch (Exception ex)
@@ -81,6 +67,39 @@ namespace Transformations.Crawlers
                 Console.WriteLine(ex.Message);
                 Console.ReadKey();
             }
+        }
+
+        internal Dictionary<string, string> PopulateDictionaryWithProperties() 
+        {
+            var configDir = $"{CurrentDir}\\config\\";
+            XDocument globalDocument = XDocument.Load($"{configDir}global.properties");
+            var allPropertiesGlobal = globalDocument.Root?.DescendantNodes().OfType<XElement>();
+            var allItemsDictGlobal = allPropertiesGlobal?.ToDictionary(n => n.Attribute("name")?.Value,
+                n => n.Attribute("value")?.Value);
+            return PopulateDictionaryWithPropertiesHelper(allItemsDictGlobal, _environment);
+
+        }
+
+        private Dictionary<string, string> PopulateDictionaryWithPropertiesHelper(Dictionary<string, string> baseDictionary, string environment)
+        {
+            var configDir = $"{CurrentDir}\\config\\";
+            XDocument localDocument = XDocument.Load($"{configDir}{environment}.properties");
+            var allNodes = localDocument.Root?.DescendantNodes().OfType<XElement>();
+            var allNodesArray = allNodes as XElement[] ?? allNodes.ToArray();
+            var includeNodes = allNodesArray.Where(i => i.Name.ToString().ToLower() == "include");
+            
+            foreach (var includeNode in includeNodes)
+            {
+                baseDictionary = PopulateDictionaryWithPropertiesHelper(baseDictionary,
+                        includeNode.Attribute("environment").Value);
+            }
+            var allPropertiesLocal = allNodesArray.Where(i => i.Name.ToString().ToLower() == "property");
+            var allItemsDictLocal = allPropertiesLocal.ToDictionary(n => n.Attribute("name").Value,
+                n => n.Attribute("value").Value);
+            
+            return baseDictionary.Concat(allItemsDictLocal).GroupBy(d => d.Key)
+                    .ToDictionary(d => d.Key, d => d.Last().Value); ;
+
         }
         internal void Traverse(string currentDir)
         {
