@@ -27,6 +27,13 @@ To use the tool:
       </properties>
       ```
   2. General rule is that each .properties file has to have a root node <properties>
+  3. Properties files can include the <include> node as a child of <properties> node. It specifies another .properties files which properties should be included. Note, that no matter where the <include> not is located, it will be processed before any other properties, meaning that any property in the current file with the same name of a property from the included file will overwrite it. (you can think of global.properties file as included in each file by default):
+  ```
+  <properties>
+  
+    <include environment="prod"/>
+    ...
+  </properties>
   
 7. Create the template file (extension .ttemplate (note double t)) for each of the config files (or any other files) you want to transform. For example, if file name is web.config, name the template file web.config.ttemplate
 
