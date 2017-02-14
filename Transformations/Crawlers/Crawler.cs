@@ -110,8 +110,15 @@ namespace Transformations.Crawlers
                 text = HandleLogic(text, _environment);
                 var newFileName = templateFile.Remove(templateFile.Length - FileExtension.Length);
                 text = ReplaceTokens(text);
-                File.WriteAllText(newFileName, text);
-                Console.WriteLine($"{newFileName} has been written");
+                if (string.IsNullOrEmpty(text))
+                {
+                    Console.WriteLine($"{newFileName} has NOT been written, because there is nothing to write.");
+                }
+                else
+                {
+                    File.WriteAllText(newFileName, text);
+                    Console.WriteLine($"{newFileName} has been written");
+                }
             }
 
             var directoryList = Directory.GetDirectories(currentDir);
