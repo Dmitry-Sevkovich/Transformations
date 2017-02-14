@@ -49,7 +49,7 @@ To use the tool:
         Test123
         abc(ValueForTesting)def
 
-  2. To put some text in the file based on the environment use the following syntax:
+  2. To put some text in the file based on the environment use the following syntax (note, that if the output file comes out empty, it doesn't get created):
   ```
       #if(local||dev)
         <settingForLocalAndDev/>
