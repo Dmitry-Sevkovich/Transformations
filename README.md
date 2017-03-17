@@ -19,13 +19,13 @@ To use the tool:
 
 6. The structure of the properties files as follows:
 
-    * ```
-      <properties>
+   ```
+    <properties>
       
-        <property name="TestProperty" value="ValueForTesting"/>
+      <property name="TestProperty" value="ValueForTesting"/>
         
-      </properties>
-      ```
+    </properties>
+   ```
     * General rule is that each .properties file has to have a root node <properties>
     * Properties files can include the &lt;include&gt; node as a child of &lt;properties&gt; node. It specifies another .properties files which properties should be included. Note, that no matter where the &lt;include&gt; node is located, it will be processed before any other properties, meaning that any property in the current file with the same name of a property from the included file will overwrite it. (you can think of global.properties file as included in each file by default):
     ```
