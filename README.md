@@ -19,25 +19,25 @@ To use the tool:
 
 6. The structure of the properties files as follows:
 
-  1. ```
+    * ```
       <properties>
       
         <property name="TestProperty" value="ValueForTesting"/>
         
       </properties>
       ```
-  2. General rule is that each .properties file has to have a root node <properties>
-  3. Properties files can include the <include> node as a child of <properties> node. It specifies another .properties files which properties should be included. Note, that no matter where the <include> not is located, it will be processed before any other properties, meaning that any property in the current file with the same name of a property from the included file will overwrite it. (you can think of global.properties file as included in each file by default):
-  ```
-  <properties>
-  
-    <include environment="prod"/>
-    ...
-  </properties>
-  
+    * General rule is that each .properties file has to have a root node <properties>
+    * Properties files can include the &lt;include&gt; node as a child of &lt;properties&gt; node. It specifies another .properties files which properties should be included. Note, that no matter where the &lt;include&gt; node is located, it will be processed before any other properties, meaning that any property in the current file with the same name of a property from the included file will overwrite it. (you can think of global.properties file as included in each file by default):
+    ```
+    <properties>
+    
+      <include environment="prod"/>
+      ...
+    </properties>
+    ``` 
 7. Create the template file (extension .ttemplate (note double t)) for each of the config files (or any other files) you want to transform. For example, if file name is web.config, name the template file web.config.ttemplate
 
-  1. In the .ttemplate file put ${TestProperty} in the spot, where you want it to be changed for its value. 
+    * In the .ttemplate file put ${TestProperty} in the spot, where you want it to be changed for its value. 
     
     For example, if you have the test.config.ttemplate with the following:
         
@@ -49,7 +49,7 @@ To use the tool:
         Test123
         abc(ValueForTesting)def
 
-  2. To put some text in the file based on the environment use the following syntax (note, that if the output file comes out empty, it doesn't get created):
+    * To put some text in the file based on the environment use the following syntax (note, that if the output file comes out empty, it doesn't get created):
   ```
       #if(local||dev)
         <settingForLocalAndDev/>
@@ -58,11 +58,11 @@ To use the tool:
         <settingForProd/>
       #endif
    ``` 
-      In that case on local and dev environments you'll get the following:
+  In that case on local and dev environments you'll get the following:
         
         <settingForLocalAndDev/>
         
-      While on prod you'll get:
+  While on prod you'll get:
       
         <settingForProd/>
         
