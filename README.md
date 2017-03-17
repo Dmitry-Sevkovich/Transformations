@@ -50,19 +50,19 @@ To use the tool:
         abc(ValueForTesting)def
 
     * To put some text in the file based on the environment use the following syntax (note, that if the output file comes out empty, it doesn't get created):
-  ```
-      #if(local||dev)
-        <settingForLocalAndDev/>
-      #endif
-      #if(prod)
-        <settingForProd/>
-      #endif
+   ```
+         #if(local||dev)
+            <settingForLocalAndDev/>
+         #endif
+         #if(prod)
+            <settingForProd/>
+         #endif
    ``` 
-  In that case on local and dev environments you'll get the following:
+    In that case on local and dev environments you'll get the following:
         
         <settingForLocalAndDev/>
         
-  While on prod you'll get:
+    While on prod you'll get:
       
         <settingForProd/>
         
