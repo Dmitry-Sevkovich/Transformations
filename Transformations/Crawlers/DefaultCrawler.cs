@@ -45,7 +45,7 @@ namespace Transformations.Crawlers
                 return _workingDir;
             }
         }
-        public void Crawl(string[] args)
+        public virtual void Crawl(string[] args)
         {
             if (args.Length >= 1 && !string.IsNullOrEmpty(args[0]))
             {
@@ -69,7 +69,7 @@ namespace Transformations.Crawlers
             }
         }
 
-        internal Dictionary<string, string> PopulateDictionaryWithProperties() 
+        protected virtual Dictionary<string, string> PopulateDictionaryWithProperties() 
         {
             var configDir = $"{CurrentDir}\\config\\";
             XDocument globalDocument = XDocument.Load($"{configDir}global.properties");
@@ -101,7 +101,7 @@ namespace Transformations.Crawlers
                     .ToDictionary(d => d.Key, d => d.Last().Value); ;
 
         }
-        internal void Traverse(string currentDir)
+        protected virtual void Traverse(string currentDir)
         {
             var templateFiles = Directory.GetFiles(currentDir, $"*{FileExtension}");
             foreach (var templateFile in templateFiles)
@@ -129,7 +129,7 @@ namespace Transformations.Crawlers
             }
         }
 
-        internal string ReplaceTokens(string text, Dictionary<string, string> dict = null )
+        public virtual string ReplaceTokens(string text, Dictionary<string, string> dict = null )
         {
             if (dict == null)
             {

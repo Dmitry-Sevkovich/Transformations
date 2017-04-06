@@ -13,16 +13,24 @@ namespace Transformations
         static void Main(string[] args)
         {
             var crawlerClassName = ConfigurationManager.AppSettings["Crawler"];
-            var crawlerType = Type.GetType(crawlerClassName);
-            if (crawlerType != null)
+            if (string.IsNullOrEmpty(crawlerClassName))
             {
-                var crawler = Activator.CreateInstance(crawlerType) as ICrawler;
+                var crawler = new DefaultCrawler();
                 crawler.Crawl(args);
             }
             else
             {
-                Console.WriteLine($"Crawler {crawlerClassName} is not implemented");
-                Console.ReadKey();
+                var crawlerType = Type.GetType(crawlerClassName);
+                if (crawlerType != null)
+                {
+                    var crawler = Activator.CreateInstance(crawlerType) as ICrawler;
+                    crawler?.Crawl(args);
+                }
+                else
+                {
+                    Console.WriteLine($"Crawler {crawlerClassName} is not implemented");
+                    Console.ReadKey();
+                }
             }
         }
     }
