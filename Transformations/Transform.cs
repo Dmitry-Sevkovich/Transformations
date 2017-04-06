@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,18 @@ namespace Transformations
     {
         static void Main(string[] args)
         {
-            Crawler crawler = new Crawler();
-            crawler.Crawl(args);
+            var crawlerClassName = ConfigurationManager.AppSettings["Crawler"];
+            var crawlerType = Type.GetType(crawlerClassName);
+            if (crawlerType != null)
+            {
+                var crawler = Activator.CreateInstance(crawlerType) as ICrawler;
+                crawler.Crawl(args);
+            }
+            else
+            {
+                Console.WriteLine($"Crawler {crawlerClassName} is not implemented");
+                Console.ReadKey();
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ using System.Xml.Linq;
 using System.Text.RegularExpressions;
 namespace Transformations.Crawlers
 {
-    internal class Crawler
+    public class DefaultCrawler : ICrawler
     {
         private Dictionary<string, string> _allPropertiesDict;
 
@@ -45,7 +45,7 @@ namespace Transformations.Crawlers
                 return _workingDir;
             }
         }
-        internal void Crawl(string[] args)
+        public void Crawl(string[] args)
         {
             if (args.Length >= 1 && !string.IsNullOrEmpty(args[0]))
             {

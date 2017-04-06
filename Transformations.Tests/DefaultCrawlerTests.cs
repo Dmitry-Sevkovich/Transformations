@@ -10,7 +10,7 @@ using Transformations.Crawlers;
 namespace Transformations.Tests
 {
     [TestFixture]
-    internal class TransformationTests
+    internal class DefaultCrawlerTests
     {
         [Test]
         public void ReplaceTokenTest()
@@ -20,7 +20,7 @@ namespace Transformations.Tests
             {
                 {"testToken", "ResultingText"}
             };
-            var crawler = new Crawler();
+            var crawler = new DefaultCrawler();
             Assert.That("testTextResultingTextMoreTestText", Is.EqualTo(crawler.ReplaceTokens(text, dict)));
         }
 
@@ -32,7 +32,7 @@ namespace Transformations.Tests
             {
                 {"testToken", "ResultingText"}
             };
-            var crawler = new Crawler();
+            var crawler = new DefaultCrawler();
             Assert.Throws(Is.TypeOf<Exception>()
                     .And.Message.EqualTo("failingToken token is not defined in config files"),
                 delegate { crawler.ReplaceTokens(text, dict); });
@@ -45,7 +45,7 @@ namespace Transformations.Tests
         //requires the file C:\Test\local.environment to exist
         public void EnvironmentTest()
         {
-            Assert.That(Crawler.GetEnvironment, Is.EqualTo("local"));
+            Assert.That(DefaultCrawler.GetEnvironment, Is.EqualTo("local"));
         }
 
         [Test]
@@ -77,11 +77,11 @@ namespace Transformations.Tests
                        "	<tes name=\"${Global.Property3}\" value=\"ThirdGlobalPropOverwriteTEST\"/>" + System.Environment.NewLine +
                        "	<tes name=\"${Environment.dev}\" value=\"This is dev Environment\"/>" + System.Environment.NewLine +
                        "</term>";
-            Crawler crawler = new Crawler();
+            DefaultCrawler crawler = new DefaultCrawler();
 
             Assert.That(textForLocal, Is.EqualTo(crawler.HandleLogic(text, "local")));
 #if DEBUG
-            Assert.That(textForLocal, Is.EqualTo(crawler.HandleLogic(text, Crawler.GetEnvironment)));
+            Assert.That(textForLocal, Is.EqualTo(crawler.HandleLogic(text, DefaultCrawler.GetEnvironment)));
 #endif
             Assert.That(textForDev, Is.EqualTo(crawler.HandleLogic(text, "dev")));
         }
@@ -135,11 +135,11 @@ namespace Transformations.Tests
                        "	<tes name=\"${Environment.authDevLocal}\" value=\"This is auth, dev and local Environment\"/>" + System.Environment.NewLine +
                        "	<tes name=\"${Environment.dev}\" value=\"This is dev Environment\"/>" + System.Environment.NewLine +
                        "</term>";
-            Crawler crawler = new Crawler();
+            DefaultCrawler crawler = new DefaultCrawler();
 
             Assert.That(textForLocal, Is.EqualTo(crawler.HandleLogic(text, "local")));
 #if DEBUG
-            Assert.That(textForLocal, Is.EqualTo(crawler.HandleLogic(text, Crawler.GetEnvironment)));
+            Assert.That(textForLocal, Is.EqualTo(crawler.HandleLogic(text, DefaultCrawler.GetEnvironment)));
 #endif
             Assert.That(textForDev, Is.EqualTo(crawler.HandleLogic(text, "dev")));
         }
@@ -154,7 +154,7 @@ namespace Transformations.Tests
                 {"outterToken", "Outter${testToken}Test" },
                 {"mostOutterToken","Most${outterToken}Test" }
             };
-            var crawler = new Crawler();
+            var crawler = new DefaultCrawler();
             Assert.That("testTextMostOutterResultingTextTestTestMoreTestText", Is.EqualTo(crawler.ReplaceTokens(text, dict)));
         }
     }
